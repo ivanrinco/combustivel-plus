@@ -1,0 +1,14 @@
+name: Atualizar preços ANP
+on:
+  schedule: [{cron: "0 12 * * 1"}]
+  workflow_dispatch:
+permissions: {contents: write}
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python scripts/atualizar_precos.py
+      - run: |
+          git config user.name "preco-bot"; git config user.email "bot@users.noreply.github.com"
+          git add precos-anp.json; git diff --cached --quiet || (git commit -m "Atualiza preços ANP" && git push)
